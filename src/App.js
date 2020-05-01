@@ -9,6 +9,8 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table'
+import Modal from 'react-bootstrap/Modal'
+import InputGroup from 'react-bootstrap/InputGroup'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
@@ -70,36 +72,82 @@ function Students(props) {
 
 function StudentsIndex(props) {
   const [students, setStudents] = useState(JSON.parse(props.students));
-
-  function addNewStudent(){
-    console.log('add');
-  }
+  const [modalShow, setModalShow] = useState(false);
 
   return(
     <Container>
-      <button onClick={addNewStudent}>Add new student</button>
+      <Button variant="primary" onClick={() => setModalShow(true)}>
+        Add student
+      </Button>
+
+      <AddNewStudentModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
       <Table borderless striped hover>
-      <thead>
-        <tr>
-          <th scope="col">name</th>
-          <th scope="col">surname</th>
-          <th scope="col">group</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.map(function(student, key) {
-          return (
-            <tr key={key}>
-              <td>{student['name']}</td>
-              <td>{student['surname']}</td>
-              <td>{student['group']}</td>
-            </tr>)
-        })}
-      </tbody>
+        <thead>
+          <tr>
+            <th scope="col">name</th>
+            <th scope="col">surname</th>
+            <th scope="col">group</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {students.map(function(student, key) {
+            return (
+              <tr key={key}>
+                <td>{student['name']}</td>
+                <td>{student['surname']}</td>
+                <td>{student['group']}</td>
+              </tr>)
+          })}
+        </tbody>
       </Table>
     </Container>
+  );
+}
+
+function AddNewStudentModal(props) {
+  function addNewStudent() {
+    console.log('add new student')
+  }
+
+  return (
+    <Modal
+      {...props}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Add new student
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Name"
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Surname"
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Group"
+          />
+        </InputGroup>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={addNewStudent}>Add</Button>
+        <Button onClick={props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
 
