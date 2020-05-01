@@ -109,11 +109,25 @@ function StudentsIndex(props) {
                 <td>{student['surname']}</td>
                 <td>{student['group']}</td>
                 <td><EditButton id={student['id']} name={student['name']} surname={student['surname']} group={student['group']} /></td>
+                <td><DestroyButton id={student['id']} /></td>
               </tr>)
           })}
         </tbody>
       </Table>
     </Container>
+  );
+}
+
+function DestroyButton(props) {
+  function deleteStudent() {
+    axios.delete('http://localhost:3001/students/'+props.id+'.json')
+    .then(res => {
+      console.log(res.data);
+    });
+  }
+
+  return(
+    <Button variant='danger' onClick={deleteStudent}>delete</Button>
   );
 }
 
