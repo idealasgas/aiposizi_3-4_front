@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Alert from 'react-bootstrap/Alert'
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
@@ -74,12 +75,18 @@ function StudentsIndex(props) {
   const [students, setStudents] = useState(JSON.parse(props.students));
   const [modalShow, setModalShow] = useState(false);
 
+  useEffect(() => {
+    axios.get('http://localhost:3001/students.json')
+    .then(res => {
+      setStudents(res.data);
+    });
+  }, [students, setStudents]);
+
   return(
     <Container>
       <Button variant="primary" onClick={() => setModalShow(true)}>
         Add student
       </Button>
-
       <AddNewStudentModal
         show={modalShow}
         onHide={() => setModalShow(false)}
@@ -110,8 +117,43 @@ function StudentsIndex(props) {
 }
 
 function AddNewStudentModal(props) {
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [group, setGroup] = useState('');
+  const [error, setError] = useState('');
+
   function addNewStudent() {
-    console.log('add new student')
+    console.log(name, surname, group);
+    setError('');
+    if (name === '' || surname === '') {
+      setError('name and surname fields should be filled');
+    } else {
+      axios.post('http://localhost:3001/students.json', {
+        student: {
+          name: name,
+          surname: surname,
+          group_name: group
+        }
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+
+  function nameChange(event) {
+    setName(event.target.value);
+  }
+
+  function surnameChange(event) {
+    setSurname(event.target.value);
+  }
+
+  function groupChange(event) {
+    setGroup(event.target.value);
   }
 
   return (
@@ -126,20 +168,27 @@ function AddNewStudentModal(props) {
           Add new student
         </Modal.Title>
       </Modal.Header>
+      <WarningAlert error={error} />
       <Modal.Body>
         <InputGroup className="mb-3">
           <FormControl
             placeholder="Name"
+            onChange={nameChange}
+            value={name}
           />
         </InputGroup>
         <InputGroup className="mb-3">
           <FormControl
             placeholder="Surname"
+            value={surname}
+            onChange={surnameChange}
           />
         </InputGroup>
         <InputGroup className="mb-3">
           <FormControl
             placeholder="Group"
+            value={group}
+            onChange={groupChange}
           />
         </InputGroup>
       </Modal.Body>
@@ -149,6 +198,18 @@ function AddNewStudentModal(props) {
       </Modal.Footer>
     </Modal>
   );
+}
+
+function WarningAlert(props) {
+  if (props.error !== '') {
+    return(
+      <Alert variant="warning">
+        {props.error}
+      </Alert>
+    );
+  } else {
+    return (<div></div>)
+  }
 }
 
 function Home() {
