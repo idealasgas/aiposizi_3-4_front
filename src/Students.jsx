@@ -19,6 +19,13 @@ function Students(props) {
     });
   }, [modalShow]);
 
+  const handleChange = () => {
+    axios.get('http://localhost:3001/students.json')
+    .then(res => {
+      setStudents(res.data);
+    });
+  };
+
   return(
     <Container>
       <Button variant="primary" onClick={() => setModalShow(true)}>
@@ -46,7 +53,7 @@ function Students(props) {
                 <td>{student['surname']}</td>
                 <td>{student['group']}</td>
                 <td><EditButton id={student['id']} name={student['name']} surname={student['surname']} group={student['group']} /></td>
-                <td><DestroyButton id={student['id']} /></td>
+                <td><DestroyButton onChange={handleChange} id={student['id']} /></td>
               </tr>)
           })}
         </tbody>
@@ -60,6 +67,7 @@ function DestroyButton(props) {
     axios.delete('http://localhost:3001/students/'+props.id+'.json')
     .then(res => {
       console.log(res.data);
+      props.onChange();
     });
   }
 
