@@ -10,6 +10,7 @@ import FormControl from 'react-bootstrap/FormControl'
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 function App() {
   const [topic, setTopic] = useState('home');
@@ -17,9 +18,13 @@ function App() {
 
   function showStudents(e){
     e.preventDefault();
-    let propArray = JSON.stringify([{name: 'name1', surname: 'surname1'}, {name: 'name2', surname: 'surname2'}]);
-    setItems(propArray);
-    setTopic('students');
+    axios.get('http://localhost:3001/students.json')
+    .then(res => {
+      let students = JSON.stringify(res.data);
+      console.log(res.data);
+      setItems(students);
+      setTopic('students');
+    });
   }
 
   function switchTopic() {
@@ -66,8 +71,13 @@ function Students(props) {
 function StudentsIndex(props) {
   const [students, setStudents] = useState(JSON.parse(props.students));
 
+  function addNewStudent(){
+    console.log('add');
+  }
+
   return(
     <Container>
+      <button onClick={addNewStudent}>Add new student</button>
       <Table borderless striped hover>
       <thead>
         <tr>
@@ -84,6 +94,7 @@ function StudentsIndex(props) {
             <tr key={key}>
               <td>{student['name']}</td>
               <td>{student['surname']}</td>
+              <td>{student['group']}</td>
             </tr>)
         })}
       </tbody>
