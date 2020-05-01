@@ -52,7 +52,7 @@ function Students(props) {
                 <td>{student['name']}</td>
                 <td>{student['surname']}</td>
                 <td>{student['group']}</td>
-                <td><EditButton id={student['id']} name={student['name']} surname={student['surname']} group={student['group']} /></td>
+                <td><EditButton onChange={handleChange} id={student['id']} name={student['name']} surname={student['surname']} group={student['group']} /></td>
                 <td><DestroyButton onChange={handleChange} id={student['id']} /></td>
               </tr>)
           })}
@@ -88,6 +88,7 @@ function EditButton(props) {
           name={props.name}
           surname={props.surname}
           group={props.group}
+          onChange={props.onChange}
         />
       <Button variant="primary" onClick={() => setModalShow(true)}>
         edit
@@ -110,6 +111,7 @@ function EditStudentModal(props) {
       }
     }).then(res => {
       console.log(res.data);
+      props.onChange();
     })
   }
 
