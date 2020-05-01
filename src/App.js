@@ -108,12 +108,104 @@ function StudentsIndex(props) {
                 <td>{student['name']}</td>
                 <td>{student['surname']}</td>
                 <td>{student['group']}</td>
+                <td><EditButton id={student['id']} name={student['name']} surname={student['surname']} group={student['group']} /></td>
               </tr>)
           })}
         </tbody>
       </Table>
     </Container>
   );
+}
+
+function EditButton(props) {
+  const [modalShow, setModalShow] = useState(false);
+
+  return(
+    <div>
+      <EditStudentModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          id={props.id}
+          name={props.name}
+          surname={props.surname}
+          group={props.group}
+        />
+      <Button variant="primary" onClick={() => setModalShow(true)}>
+        edit
+      </Button>
+     </div>
+  );
+}
+
+function EditStudentModal(props) {
+  const [name, setName] = useState(props.name);
+  const [surname, setSurname] = useState(props.surname);
+  const [group, setGroup] = useState((props.name === null ? '' : props.group));
+
+  function editStudent() {
+    axios.patch('http://localhost:3001/students/'+props.id+'.json', {
+      student: {
+        name: name,
+        surname: surname,
+        group_name: group
+      }
+    }).then(res => {
+      console.log(res.data);
+    })
+  }
+
+  function nameChange(event) {
+    setName(event.target.value);
+  }
+
+  function surnameChange(event) {
+    setSurname(event.target.value);
+  }
+
+  function groupChange(event) {
+    setGroup(event.target.value);
+  }
+
+  return(
+    <Modal
+      {...props}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Edit student
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Name"
+            onChange={nameChange}
+            value={name}
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Surname"
+            value={surname}
+            onChange={surnameChange}
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Group"
+            value={group}
+            onChange={groupChange}
+          />
+        </InputGroup>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={editStudent}>Edit</Button>
+        <Button onClick={props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>);
 }
 
 function AddNewStudentModal(props) {
@@ -123,7 +215,6 @@ function AddNewStudentModal(props) {
   const [error, setError] = useState('');
 
   function addNewStudent() {
-    console.log(name, surname, group);
     setError('');
     if (name === '' || surname === '') {
       setError('name and surname fields should be filled');
