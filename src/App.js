@@ -80,7 +80,7 @@ function StudentsIndex(props) {
     .then(res => {
       setStudents(res.data);
     });
-  }, [students, setStudents]);
+  }, [modalShow]);
 
   return(
     <Container>
