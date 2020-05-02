@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Students from './Students'
 import Teachers from './Teachers';
+import Classrooms from './Classrooms';
 
 function App() {
   const [topic, setTopic] = useState('home');
@@ -33,11 +34,23 @@ function App() {
     });
   }
 
+  function showClassrooms(e) {
+    e.preventDefault();
+    axios.get('http://localhost:3001/classrooms.json')
+    .then(res => {
+      let classrooms = JSON.stringify(res.data);
+      console.log(res.data);
+      setItems(classrooms);
+      setTopic('classrooms');
+    });
+  }
+
   function switchTopic() {
     switch(topic) {
       case 'home': return <Home />;
       case 'students': return <Students students={items} />;
       case 'teachers': return <Teachers teachers={items} />;
+      case 'classrooms': return <Classrooms classrooms={items} />;
     }
   }
 
@@ -51,7 +64,7 @@ function App() {
             <button onClick={showStudents}>Students</button>
             <button onClick={showTeachers}>Teachers</button>
             <Nav.Link href="#link">Groups</Nav.Link>
-            <Nav.Link href="#link">Classrooms</Nav.Link>
+            <button onClick={showClassrooms}>Classrooms</button>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
