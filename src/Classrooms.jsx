@@ -176,7 +176,7 @@ function AddNewClassroomModal(props) {
       axios.post('http://localhost:3001/classrooms.json', {
         classroom: {
           number: number,
-          teacher: teacher
+          teacher_id: teacher
         }
       })
       .then(function (response) {
@@ -196,7 +196,10 @@ function AddNewClassroomModal(props) {
   }
 
   function teacherChange(event) {
-    setTeacher(event.target.value);
+    let selected = event.target.selectedIndex
+    let teacherID = event.target.options[selected].dataset.id;
+    let id = (teacherID === undefined ? '' : teacherID);
+    setTeacher(id);
   }
 
   return (
@@ -224,12 +227,12 @@ function AddNewClassroomModal(props) {
         <Form>
           <Form.Group controlId="exampleForm.SelectCustom">
             <Form.Label>Teacher</Form.Label>
-            <Form.Control as="select" custom>
+            <Form.Control as="select" onChange={teacherChange} custom>
+              <option></option>
               {teachers.map(function(teacher, key) {
                 return (
-                  <option key={key}>{teacher['name']} {teacher['surname']}</option>)
+                  <option data-id={teacher['id']} key={key}>{teacher['name']} {teacher['surname']}</option>)
               })}
-              <option></option>
             </Form.Control>
           </Form.Group>
         </Form>
