@@ -48,10 +48,10 @@ function Classrooms(props) {
         <tbody>
           {classrooms.map(function(classroom, key) {
             return (
-              <tr key={key}>
+              <tr key={classroom['id']}>
                 <td>{classroom['number']}</td>
                 <td>{classroom['teacher']}</td>
-                <td><EditButton onChange={handleChange} id={classroom['id']} number={classroom['number']} teacher={classroom['teacher']} /></td>
+                <td><EditButton onChange={handleChange} id={classroom['id']} number={classroom['number']} teacher={classroom['teacher_id']} /></td>
                 <td><DestroyButton onChange={handleChange} id={classroom['id']} /></td>
               </tr>)
           })}
@@ -98,12 +98,20 @@ function EditButton(props) {
 function EditClassroomModal(props) {
   const [number, setNumber] = useState(props.number);
   const [teacher, setTeacher] = useState(props.teacher);
+  const [teachers, setTeachers] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/teachers.json')
+    .then(res => {
+      setTeachers(res.data);
+    })
+  }, []);
 
   function editClassroom() {
     axios.patch('http://localhost:3001/classrooms/'+props.id+'.json', {
       classroom: {
         number: number,
-        teacher: teacher
+        teacher_id: teacher
       }
     }).then(res => {
       console.log(res.data);
@@ -117,7 +125,10 @@ function EditClassroomModal(props) {
   }
 
   function teacherChange(event) {
-    setTeacher(event.target.value);
+    let selected = event.target.selectedIndex
+    let teacherID = event.target.options[selected].dataset.id;
+    let id = (teacherID === undefined ? '' : teacherID);
+    setTeacher(id);
   }
 
   return(
@@ -141,11 +152,18 @@ function EditClassroomModal(props) {
           />
         </InputGroup>
         <InputGroup className="mb-3">
-          <FormControl
-            placeholder="Teacher"
-            value={teacher}
-            onChange={teacherChange}
-          />
+          <Form>
+            <Form.Group controlId="exampleForm.SelectCustom">
+              <Form.Label>Teacher</Form.Label>
+              <Form.Control as="select" onChange={teacherChange} custom>
+                <option></option>
+                {teachers.map(function(teacher, key) {
+                  return (
+                    <option data-id={teacher['id']} key={key}>{teacher['name']} {teacher['surname']}</option>)
+                })}
+              </Form.Control>
+            </Form.Group>
+          </Form>
         </InputGroup>
       </Modal.Body>
       <Modal.Footer>
