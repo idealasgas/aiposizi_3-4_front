@@ -8,30 +8,30 @@ import Table from 'react-bootstrap/Table'
 import Modal from 'react-bootstrap/Modal'
 import InputGroup from 'react-bootstrap/InputGroup'
 
-function Students(props) {
-  const [students, setStudents] = useState(JSON.parse(props.students));
+function Teachers(props) {
+  const [teachers, setTeachers] = useState(JSON.parse(props.teachers));
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/students.json')
+    axios.get('http://localhost:3001/teachers.json')
     .then(res => {
-      setStudents(res.data);
+      setTeachers(res.data);
     });
   }, [modalShow]);
 
   const handleChange = () => {
-    axios.get('http://localhost:3001/students.json')
+    axios.get('http://localhost:3001/teachers.json')
     .then(res => {
-      setStudents(res.data);
+      setTeachers(res.data);
     });
   };
 
   return(
     <Container>
       <Button variant="primary" onClick={() => setModalShow(true)}>
-        Add student
+        Add teacher
       </Button>
-      <AddNewStudentModal
+      <AddNewTeacherModal
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
@@ -40,20 +40,20 @@ function Students(props) {
           <tr>
             <th scope="col">name</th>
             <th scope="col">surname</th>
-            <th scope="col">group</th>
+            <th scope="col">subject</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
-          {students.map(function(student, key) {
+          {teachers.map(function(teacher, key) {
             return (
               <tr key={key}>
-                <td>{student['name']}</td>
-                <td>{student['surname']}</td>
-                <td>{student['group']}</td>
-                <td><EditButton onChange={handleChange} id={student['id']} name={student['name']} surname={student['surname']} group={student['group']} /></td>
-                <td><DestroyButton onChange={handleChange} id={student['id']} /></td>
+                <td>{teacher['name']}</td>
+                <td>{teacher['surname']}</td>
+                <td>{teacher['subject']}</td>
+                <td><EditButton onChange={handleChange} id={teacher['id']} name={teacher['name']} surname={teacher['surname']} subject={teacher['subject']} /></td>
+                <td><DestroyButton onChange={handleChange} id={teacher['id']} /></td>
               </tr>)
           })}
         </tbody>
@@ -63,8 +63,8 @@ function Students(props) {
 }
 
 function DestroyButton(props) {
-  function deleteStudent() {
-    axios.delete('http://localhost:3001/students/'+props.id+'.json')
+  function deleteTeacher() {
+    axios.delete('http://localhost:3001/teachers/'+props.id+'.json')
     .then(res => {
       console.log(res.data);
       props.onChange();
@@ -72,7 +72,7 @@ function DestroyButton(props) {
   }
 
   return(
-    <Button variant='danger' onClick={deleteStudent}>delete</Button>
+    <Button variant='danger' onClick={deleteTeacher}>delete</Button>
   );
 }
 
@@ -81,13 +81,13 @@ function EditButton(props) {
 
   return(
     <div>
-      <EditStudentModal
+      <EditTeacherModal
           show={modalShow}
           onHide={() => setModalShow(false)}
           id={props.id}
           name={props.name}
           surname={props.surname}
-          group={props.group}
+          subject={props.subject}
           onChange={props.onChange}
         />
       <Button variant="primary" onClick={() => setModalShow(true)}>
@@ -97,21 +97,22 @@ function EditButton(props) {
   );
 }
 
-function EditStudentModal(props) {
+function EditTeacherModal(props) {
   const [name, setName] = useState(props.name);
   const [surname, setSurname] = useState(props.surname);
-  const [group, setGroup] = useState((props.group === null ? '' : props.group));
+  const [subject, setSubject] = useState(props.subject);
 
-  function editStudent() {
-    axios.patch('http://localhost:3001/students/'+props.id+'.json', {
-      student: {
+  function editTeacher() {
+    axios.patch('http://localhost:3001/teachers/'+props.id+'.json', {
+      teacher: {
         name: name,
         surname: surname,
-        group_name: group
+        subject: subject
       }
     }).then(res => {
       console.log(res.data);
       props.onChange();
+      props.onHide();
     })
   }
 
@@ -123,8 +124,8 @@ function EditStudentModal(props) {
     setSurname(event.target.value);
   }
 
-  function groupChange(event) {
-    setGroup(event.target.value);
+  function subjectChange(event) {
+    setSubject(event.target.value);
   }
 
   return(
@@ -136,7 +137,7 @@ function EditStudentModal(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Edit student
+          Edit teacher
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -156,39 +157,43 @@ function EditStudentModal(props) {
         </InputGroup>
         <InputGroup className="mb-3">
           <FormControl
-            placeholder="Group"
-            value={group}
-            onChange={groupChange}
+            placeholder="Subject"
+            value={subject}
+            onChange={subjectChange}
           />
         </InputGroup>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={editStudent}>Edit</Button>
+        <Button onClick={editTeacher}>Edit</Button>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>);
 }
 
-function AddNewStudentModal(props) {
+function AddNewTeacherModal(props) {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
-  const [group, setGroup] = useState('');
+  const [subject, setSubject] = useState('');
   const [error, setError] = useState('');
 
-  function addNewStudent() {
+  function addNewTeacher() {
     setError('');
     if (name === '' || surname === '') {
       setError('name and surname fields should be filled');
     } else {
-      axios.post('http://localhost:3001/students.json', {
-        student: {
+      axios.post('http://localhost:3001/teachers.json', {
+        teacher: {
           name: name,
           surname: surname,
-          group_name: group
+          subject: subject
         }
       })
       .then(function (response) {
         console.log(response);
+        setName('');
+        setSurname('');
+        setSubject('');
+        props.onHide();
       })
       .catch(function (error) {
         console.log(error);
@@ -204,8 +209,8 @@ function AddNewStudentModal(props) {
     setSurname(event.target.value);
   }
 
-  function groupChange(event) {
-    setGroup(event.target.value);
+  function subjectChange(event) {
+    setSubject(event.target.value);
   }
 
   return (
@@ -217,7 +222,7 @@ function AddNewStudentModal(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Add new student
+          Add new teacher
         </Modal.Title>
       </Modal.Header>
       <WarningAlert error={error} />
@@ -238,14 +243,14 @@ function AddNewStudentModal(props) {
         </InputGroup>
         <InputGroup className="mb-3">
           <FormControl
-            placeholder="Group"
-            value={group}
-            onChange={groupChange}
+            placeholder="Subject"
+            value={subject}
+            onChange={subjectChange}
           />
         </InputGroup>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={addNewStudent}>Add</Button>
+        <Button onClick={addNewTeacher}>Add</Button>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
@@ -264,4 +269,4 @@ function WarningAlert(props) {
   }
 }
 
-export default Students;
+export default Teachers;

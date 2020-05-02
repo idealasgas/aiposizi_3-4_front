@@ -5,6 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Students from './Students'
+import Teachers from './Teachers';
 
 function App() {
   const [topic, setTopic] = useState('home');
@@ -21,10 +22,22 @@ function App() {
     });
   }
 
+  function showTeachers(e) {
+    e.preventDefault();
+    axios.get('http://localhost:3001/teachers.json')
+    .then(res => {
+      let teachers = JSON.stringify(res.data);
+      console.log(res.data);
+      setItems(teachers);
+      setTopic('teachers');
+    });
+  }
+
   function switchTopic() {
     switch(topic) {
       case 'home': return <Home />;
-      case 'students': return <Students students={items}/>;
+      case 'students': return <Students students={items} />;
+      case 'teachers': return <Teachers teachers={items} />;
     }
   }
 
@@ -36,7 +49,7 @@ function App() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <button onClick={showStudents}>Students</button>
-            <Nav.Link href="#link">Teachers</Nav.Link>
+            <button onClick={showTeachers}>Teachers</button>
             <Nav.Link href="#link">Groups</Nav.Link>
             <Nav.Link href="#link">Classrooms</Nav.Link>
           </Nav>
