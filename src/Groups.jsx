@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
@@ -8,6 +7,7 @@ import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table'
 import Modal from 'react-bootstrap/Modal'
 import InputGroup from 'react-bootstrap/InputGroup'
+import WarningAlert from './WarningAlert'
 
 function Groups(props) {
   const [groups, setGroups] = useState(JSON.parse(props.groups));
@@ -326,18 +326,6 @@ function AddNewGroupModal(props) {
       </Modal.Footer>
     </Modal>
   );
-}
-
-function WarningAlert(props) {
-  if (props.error !== '') {
-    return(
-      <Alert variant="warning">
-        {props.error}
-      </Alert>
-    );
-  } else {
-    return (<div></div>)
-  }
 }
 
 export default Groups;

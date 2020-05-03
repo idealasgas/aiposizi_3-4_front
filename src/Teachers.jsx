@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import FormControl from 'react-bootstrap/FormControl'
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table'
 import Modal from 'react-bootstrap/Modal'
 import InputGroup from 'react-bootstrap/InputGroup'
+import WarningAlert from './WarningAlert'
 
 function Teachers(props) {
   const [teachers, setTeachers] = useState(JSON.parse(props.teachers));
@@ -255,18 +255,6 @@ function AddNewTeacherModal(props) {
       </Modal.Footer>
     </Modal>
   );
-}
-
-function WarningAlert(props) {
-  if (props.error !== '') {
-    return(
-      <Alert variant="warning">
-        {props.error}
-      </Alert>
-    );
-  } else {
-    return (<div></div>)
-  }
 }
 
 export default Teachers;
