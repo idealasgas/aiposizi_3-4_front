@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Button from 'react-bootstrap/Button'
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -70,14 +71,14 @@ function App() {
   return (
     <div>
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="#home">School</Navbar.Brand>
+        <Navbar.Brand><Button variant='light' onClick={() => setTopic('home')}>School</Button></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <button onClick={showStudents}>Students</button>
-            <button onClick={showTeachers}>Teachers</button>
-            <button onClick={showGroups}>Groups</button>
-            <button onClick={showClassrooms}>Classrooms</button>
+            <Button variant='outline-warning' onClick={showStudents}>Students</Button>
+            <Button variant='outline-danger' onClick={showTeachers}>Teachers</Button>
+            <Button variant='outline-info' onClick={showGroups}>Groups</Button>
+            <Button variant='outline-primary' onClick={showClassrooms}>Classrooms</Button>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -88,7 +89,7 @@ function App() {
 
 function Home() {
   return(
-    <div>Ето у нас главный экран, здравствуйте.</div>
+    <div>Здравствуйте.</div>
   );
 }
 
