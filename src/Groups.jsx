@@ -49,7 +49,7 @@ function Groups(props) {
           {groups.map(function(group, key) {
             return (
               <tr key={group['id']}>
-                <td>{group['name']}</td>
+                <td><ShowButton text={group['name']} id={group['id']} /></td>
                 <td>{group['teacher']}</td>
                 <td><EditButton onChange={handleChange} id={group['id']} name={group['name']} teacher={group['teacher']} /></td>
                 <td><DestroyButton onChange={handleChange} id={group['id']} /></td>
@@ -58,6 +58,70 @@ function Groups(props) {
         </tbody>
       </Table>
     </Container>
+  );
+}
+
+function ShowButton(props) {
+  const [modalShow, setModalShow] = useState(false);
+  const [students, setStudents] = useState([]);
+
+  function showGroup() {
+    axios.get('http://localhost:3001/groups/'+props.id+'.json')
+    .then(res => {
+      setStudents(res.data);
+      console.log(res.data);
+      setModalShow(true);
+    });
+  }
+
+  return(
+    <div>
+      <ShowGroupModal
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            students={students}
+          />
+      <Button variant="info" onClick={showGroup}>{props.text}</Button>
+    </div>
+  );
+}
+
+function ShowGroupModal(props) {
+  return(
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Students of this group
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Table borderless striped hover>
+          <thead>
+            <tr>
+              <th scope="col">name</th>
+              <th scope="col">surname</th>
+            </tr>
+          </thead>
+          <tbody>
+            {props.students.map(function(student, key) {
+              return (
+                <tr key={key}>
+                  <td>{student['name']}</td>
+                  <td>{student['surname']}</td>
+                </tr>)
+            })}
+          </tbody>
+        </Table>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
 
@@ -152,7 +216,7 @@ function EditGroupModal(props) {
           />
         </InputGroup>
         <InputGroup className="mb-3">
-        <Form>
+          <Form>
             <Form.Group controlId="exampleForm.SelectCustom">
               <Form.Label>Teacher</Form.Label>
               <Form.Control as="select" onChange={teacherChange} custom>
