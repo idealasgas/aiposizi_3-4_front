@@ -7,6 +7,7 @@ import axios from 'axios';
 import Students from './Students'
 import Teachers from './Teachers';
 import Classrooms from './Classrooms';
+import Groups from './Groups';
 
 function App() {
   const [topic, setTopic] = useState('home');
@@ -45,12 +46,24 @@ function App() {
     });
   }
 
+  function showGroups(e) {
+    e.preventDefault();
+    axios.get('http://localhost:3001/groups.json')
+    .then(res => {
+      let groups = JSON.stringify(res.data);
+      console.log(res.data);
+      setItems(groups);
+      setTopic('groups');
+    })
+  }
+
   function switchTopic() {
     switch(topic) {
       case 'home': return <Home />;
       case 'students': return <Students students={items} />;
       case 'teachers': return <Teachers teachers={items} />;
       case 'classrooms': return <Classrooms classrooms={items} />;
+      case 'groups': return <Groups groups={items} />;
     }
   }
 
@@ -63,7 +76,7 @@ function App() {
           <Nav className="mr-auto">
             <button onClick={showStudents}>Students</button>
             <button onClick={showTeachers}>Teachers</button>
-            <Nav.Link href="#link">Groups</Nav.Link>
+            <button onClick={showGroups}>Groups</button>
             <button onClick={showClassrooms}>Classrooms</button>
           </Nav>
         </Navbar.Collapse>

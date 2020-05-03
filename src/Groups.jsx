@@ -2,57 +2,57 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
-import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
+import FormControl from 'react-bootstrap/FormControl'
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table'
 import Modal from 'react-bootstrap/Modal'
 import InputGroup from 'react-bootstrap/InputGroup'
 
-function Classrooms(props) {
-  const [classrooms, setClassrooms] = useState(JSON.parse(props.classrooms));
+function Groups(props) {
+  const [groups, setGroups] = useState(JSON.parse(props.groups));
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/classrooms.json')
+    axios.get('http://localhost:3001/groups.json')
     .then(res => {
-      setClassrooms(res.data);
+      setGroups(res.data);
     });
   }, [modalShow]);
 
   const handleChange = () => {
-    axios.get('http://localhost:3001/classrooms.json')
+    axios.get('http://localhost:3001/groups.json')
     .then(res => {
-      setClassrooms(res.data);
+      setGroups(res.data);
     });
   };
 
   return(
     <Container>
       <Button variant="primary" onClick={() => setModalShow(true)}>
-        Add classroom
+        Add group
       </Button>
-      <AddNewClassroomModal
+      <AddNewGroupModal
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
       <Table borderless striped hover>
         <thead>
           <tr>
-            <th scope="col">number</th>
+            <th scope="col">name</th>
             <th scope="col">teacher</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
-          {classrooms.map(function(classroom, key) {
+          {groups.map(function(group, key) {
             return (
-              <tr key={classroom['id']}>
-                <td>{classroom['number']}</td>
-                <td>{classroom['teacher']}</td>
-                <td><EditButton onChange={handleChange} id={classroom['id']} number={classroom['number']} teacher={classroom['teacher_id']} /></td>
-                <td><DestroyButton onChange={handleChange} id={classroom['id']} /></td>
+              <tr key={group['id']}>
+                <td>{group['name']}</td>
+                <td>{group['teacher']}</td>
+                <td><EditButton onChange={handleChange} id={group['id']} name={group['name']} teacher={group['teacher']} /></td>
+                <td><DestroyButton onChange={handleChange} id={group['id']} /></td>
               </tr>)
           })}
         </tbody>
@@ -62,8 +62,8 @@ function Classrooms(props) {
 }
 
 function DestroyButton(props) {
-  function deleteClassroom() {
-    axios.delete('http://localhost:3001/classrooms/'+props.id+'.json')
+  function deleteGroup() {
+    axios.delete('http://localhost:3001/groups/'+props.id+'.json')
     .then(res => {
       console.log(res.data);
       props.onChange();
@@ -71,7 +71,7 @@ function DestroyButton(props) {
   }
 
   return(
-    <Button variant='danger' onClick={deleteClassroom}>delete</Button>
+    <Button variant='danger' onClick={deleteGroup}>delete</Button>
   );
 }
 
@@ -80,11 +80,11 @@ function EditButton(props) {
 
   return(
     <div>
-      <EditClassroomModal
+      <EditGroupModal
           show={modalShow}
           onHide={() => setModalShow(false)}
           id={props.id}
-          number={props.number}
+          name={props.name}
           teacher={props.teacher}
           onChange={props.onChange}
         />
@@ -95,23 +95,15 @@ function EditButton(props) {
   );
 }
 
-function EditClassroomModal(props) {
-  const [number, setNumber] = useState(props.number);
+function EditGroupModal(props) {
+  const [name, setName] = useState(props.name);
   const [teacher, setTeacher] = useState(props.teacher);
-  const [teachers, setTeachers] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:3001/teachers.json')
-    .then(res => {
-      setTeachers(res.data);
-    })
-  }, []);
-
-  function editClassroom() {
-    axios.patch('http://localhost:3001/classrooms/'+props.id+'.json', {
-      classroom: {
-        number: number,
-        teacher_id: teacher
+  function editGroup() {
+    axios.patch('http://localhost:3001/groups/'+props.id+'.json', {
+      group: {
+        name: name,
+        teacher: teacher
       }
     }).then(res => {
       console.log(res.data);
@@ -120,15 +112,12 @@ function EditClassroomModal(props) {
     })
   }
 
-  function numberChange(event) {
-    setNumber(event.target.value);
+  function nameChange(event) {
+    setName(event.target.value);
   }
 
   function teacherChange(event) {
-    let selected = event.target.selectedIndex
-    let teacherID = event.target.options[selected].dataset.id;
-    let id = (teacherID === undefined ? '' : teacherID);
-    setTeacher(id);
+    setTeacher(event.target.value);
   }
 
   return(
@@ -140,41 +129,34 @@ function EditClassroomModal(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Edit classroom
+          Edit group
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <InputGroup className="mb-3">
           <FormControl
-            placeholder="Number"
-            onChange={numberChange}
-            value={number}
+            placeholder="Name"
+            onChange={nameChange}
+            value={name}
           />
         </InputGroup>
         <InputGroup className="mb-3">
-          <Form>
-            <Form.Group controlId="exampleForm.SelectCustom">
-              <Form.Label>Teacher</Form.Label>
-              <Form.Control as="select" onChange={teacherChange} custom>
-                <option></option>
-                {teachers.map(function(teacher, key) {
-                  return (
-                    <option data-id={teacher['id']} key={key}>{teacher['name']} {teacher['surname']}</option>)
-                })}
-              </Form.Control>
-            </Form.Group>
-          </Form>
+          <FormControl
+            placeholder="Teacher"
+            value={teacher}
+            onChange={teacherChange}
+          />
         </InputGroup>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={editClassroom}>Edit</Button>
+        <Button onClick={editGroup}>Edit</Button>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>);
 }
 
-function AddNewClassroomModal(props) {
-  const [number, setNumber] = useState('');
+function AddNewGroupModal(props) {
+  const [name, setName] = useState('');
   const [teacher, setTeacher] = useState('');
   const [error, setError] = useState('');
   const [teachers, setTeachers] = useState([]);
@@ -186,20 +168,20 @@ function AddNewClassroomModal(props) {
     })
   }, []);
 
-  function addNewClassroom() {
+  function addNewGroup() {
     setError('');
-    if (number === '') {
-      setError('number field should be filled');
+    if (name === '') {
+      setError('name field should be filled');
     } else {
-      axios.post('http://localhost:3001/classrooms.json', {
-        classroom: {
-          number: number,
+      axios.post('http://localhost:3001/groups.json', {
+        group: {
+          name: name,
           teacher_id: teacher
         }
       })
       .then(function (response) {
         console.log(response);
-        setNumber('');
+        setName('');
         setTeacher('');
         props.onHide();
       })
@@ -209,8 +191,8 @@ function AddNewClassroomModal(props) {
     }
   }
 
-  function numberChange(event) {
-    setNumber(event.target.value);
+  function nameChange(event) {
+    setName(event.target.value);
   }
 
   function teacherChange(event) {
@@ -229,27 +211,27 @@ function AddNewClassroomModal(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Add new classroom
+          Add new group
         </Modal.Title>
       </Modal.Header>
       <WarningAlert error={error} />
       <Modal.Body>
         <InputGroup className="mb-3">
           <FormControl
-            placeholder="Number"
-            onChange={numberChange}
-            value={number}
+            placeholder="Name"
+            onChange={nameChange}
+            value={name}
           />
         </InputGroup>
         <InputGroup className="mb-3">
-          <Form>
+        <Form>
             <Form.Group controlId="exampleForm.SelectCustom">
               <Form.Label>Teacher</Form.Label>
               <Form.Control as="select" onChange={teacherChange} custom>
                 <option></option>
                 {teachers.map(function(teacher, key) {
                   return (
-                    <option data-id={teacher['id']} key={key}>{teacher['name']} {teacher['surname']}</option>)
+                    <option data-id={teacher['id']} key={teacher['id']}>{teacher['name']} {teacher['surname']}</option>)
                 })}
               </Form.Control>
             </Form.Group>
@@ -257,7 +239,7 @@ function AddNewClassroomModal(props) {
         </InputGroup>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={addNewClassroom}>Add</Button>
+        <Button onClick={addNewGroup}>Add</Button>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
@@ -276,4 +258,4 @@ function WarningAlert(props) {
   }
 }
 
-export default Classrooms;
+export default Groups;
