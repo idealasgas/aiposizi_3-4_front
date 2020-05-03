@@ -98,12 +98,20 @@ function EditButton(props) {
 function EditGroupModal(props) {
   const [name, setName] = useState(props.name);
   const [teacher, setTeacher] = useState(props.teacher);
+  const [teachers, setTeachers] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/teachers.json')
+    .then(res => {
+      setTeachers(res.data);
+    })
+  }, []);
 
   function editGroup() {
     axios.patch('http://localhost:3001/groups/'+props.id+'.json', {
       group: {
         name: name,
-        teacher: teacher
+        teacher_id: teacher
       }
     }).then(res => {
       console.log(res.data);
@@ -117,7 +125,10 @@ function EditGroupModal(props) {
   }
 
   function teacherChange(event) {
-    setTeacher(event.target.value);
+    let selected = event.target.selectedIndex
+    let teacherID = event.target.options[selected].dataset.id;
+    let id = (teacherID === undefined ? '' : teacherID);
+    setTeacher(id);
   }
 
   return(
@@ -141,11 +152,18 @@ function EditGroupModal(props) {
           />
         </InputGroup>
         <InputGroup className="mb-3">
-          <FormControl
-            placeholder="Teacher"
-            value={teacher}
-            onChange={teacherChange}
-          />
+        <Form>
+            <Form.Group controlId="exampleForm.SelectCustom">
+              <Form.Label>Teacher</Form.Label>
+              <Form.Control as="select" onChange={teacherChange} custom>
+                <option></option>
+                {teachers.map(function(teacher, key) {
+                  return (
+                    <option data-id={teacher['id']} key={teacher['id']}>{teacher['name']} {teacher['surname']}</option>)
+                })}
+              </Form.Control>
+            </Form.Group>
+          </Form>
         </InputGroup>
       </Modal.Body>
       <Modal.Footer>
