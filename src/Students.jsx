@@ -66,7 +66,6 @@ function DestroyButton(props) {
   function deleteStudent() {
     axios.delete(process.env.REACT_APP_STUDENTS_PREFIX+props.id+'.json')
     .then(res => {
-      console.log(res.data);
       props.onChange();
     });
   }
@@ -110,8 +109,8 @@ function EditStudentModal(props) {
         group_name: group
       }
     }).then(res => {
-      console.log(res.data);
       props.onChange();
+      props.onHide();
     })
   }
 
@@ -177,8 +176,8 @@ function AddNewStudentModal(props) {
 
   function addNewStudent() {
     setError('');
-    if (name === '' || surname === '') {
-      setError('name and surname fields should be filled');
+    if (name === '' || surname === '' || group === '') {
+      setError('name and surname fields should be filled (also group)');
     } else {
       axios.post(process.env.REACT_APP_STUDENTS_INDEX, {
         student: {
@@ -188,10 +187,10 @@ function AddNewStudentModal(props) {
         }
       })
       .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
+        setName('');
+        setSurname('');
+        setGroup('');
+        props.onHide();
       });
     }
   }

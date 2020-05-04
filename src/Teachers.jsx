@@ -66,7 +66,6 @@ function DestroyButton(props) {
   function deleteTeacher() {
     axios.delete(process.env.REACT_APP_TEACHERS_PREFIX+props.id+'.json')
     .then(res => {
-      console.log(res.data);
       props.onChange();
     });
   }
@@ -110,7 +109,6 @@ function EditTeacherModal(props) {
         subject: subject
       }
     }).then(res => {
-      console.log(res.data);
       props.onChange();
       props.onHide();
     })
@@ -189,14 +187,10 @@ function AddNewTeacherModal(props) {
         }
       })
       .then(function (response) {
-        console.log(response);
         setName('');
         setSurname('');
         setSubject('');
         props.onHide();
-      })
-      .catch(function (error) {
-        console.log(error);
       });
     }
   }

@@ -19,7 +19,6 @@ function App() {
     axios.get(process.env.REACT_APP_STUDENTS_INDEX)
     .then(res => {
       let students = JSON.stringify(res.data);
-      console.log(res.data);
       setItems(students);
       setTopic('students');
     });
@@ -30,7 +29,6 @@ function App() {
     axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       let teachers = JSON.stringify(res.data);
-      console.log(res.data);
       setItems(teachers);
       setTopic('teachers');
     });
@@ -41,7 +39,6 @@ function App() {
     axios.get(process.env.REACT_APP_CLASSROOMS_INDEX)
     .then(res => {
       let classrooms = JSON.stringify(res.data);
-      console.log(res.data);
       setItems(classrooms);
       setTopic('classrooms');
     });
@@ -52,7 +49,6 @@ function App() {
     axios.get(process.env.REACT_APP_GROUPS_INDEX)
     .then(res => {
       let groups = JSON.stringify(res.data);
-      console.log(res.data);
       setItems(groups);
       setTopic('groups');
     })

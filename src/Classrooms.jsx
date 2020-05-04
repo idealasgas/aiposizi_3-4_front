@@ -65,7 +65,6 @@ function DestroyButton(props) {
   function deleteClassroom() {
     axios.delete(process.env.REACT_APP_CLASSROOMS_PREFIX+props.id+'.json')
     .then(res => {
-      console.log(res.data);
       props.onChange();
     });
   }
@@ -114,10 +113,9 @@ function EditClassroomModal(props) {
         teacher_id: teacher
       }
     }).then(res => {
-      console.log(res.data);
       props.onChange();
       props.onHide();
-    })
+    });
   }
 
   function numberChange(event) {
@@ -198,13 +196,9 @@ function AddNewClassroomModal(props) {
         }
       })
       .then(function (response) {
-        console.log(response);
         setNumber('');
         setTeacher('');
         props.onHide();
-      })
-      .catch(function (error) {
-        console.log(error);
       });
     }
   }

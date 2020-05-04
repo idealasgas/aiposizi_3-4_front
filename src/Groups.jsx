@@ -69,7 +69,6 @@ function ShowButton(props) {
     axios.get(process.env.REACT_APP_GROUPS_PREFIX+props.id+'.json')
     .then(res => {
       setStudents(res.data);
-      console.log(res.data);
       setModalShow(true);
     });
   }
@@ -129,7 +128,6 @@ function DestroyButton(props) {
   function deleteGroup() {
     axios.delete(process.env.REACT_APP_GROUPS_PREFIX+props.id+'.json')
     .then(res => {
-      console.log(res.data);
       props.onChange();
     });
   }
@@ -178,7 +176,6 @@ function EditGroupModal(props) {
         teacher_id: teacher
       }
     }).then(res => {
-      console.log(res.data);
       props.onChange();
       props.onHide();
     })
@@ -262,13 +259,9 @@ function AddNewGroupModal(props) {
         }
       })
       .then(function (response) {
-        console.log(response);
         setName('');
         setTeacher('');
         props.onHide();
-      })
-      .catch(function (error) {
-        console.log(error);
       });
     }
   }
