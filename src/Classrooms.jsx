@@ -14,14 +14,14 @@ function Classrooms(props) {
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/classrooms.json')
+    axios.get(process.env.REACT_APP_CLASSROOMS_INDEX)
     .then(res => {
       setClassrooms(res.data);
     });
   }, [modalShow]);
 
   const handleChange = () => {
-    axios.get('http://localhost:3001/classrooms.json')
+    axios.get(process.env.REACT_APP_CLASSROOMS_INDEX)
     .then(res => {
       setClassrooms(res.data);
     });
@@ -63,7 +63,7 @@ function Classrooms(props) {
 
 function DestroyButton(props) {
   function deleteClassroom() {
-    axios.delete('http://localhost:3001/classrooms/'+props.id+'.json')
+    axios.delete(process.env.REACT_APP_CLASSROOMS_PREFIX+props.id+'.json')
     .then(res => {
       console.log(res.data);
       props.onChange();
@@ -101,14 +101,14 @@ function EditClassroomModal(props) {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       setTeachers(res.data);
     })
   }, []);
 
   function editClassroom() {
-    axios.patch('http://localhost:3001/classrooms/'+props.id+'.json', {
+    axios.patch(process.env.REACT_APP_CLASSROOMS_PREFIX+props.id+'.json', {
       classroom: {
         number: number,
         teacher_id: teacher
@@ -180,7 +180,7 @@ function AddNewClassroomModal(props) {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       setTeachers(res.data);
     })
@@ -191,7 +191,7 @@ function AddNewClassroomModal(props) {
     if (number === '') {
       setError('number field should be filled');
     } else {
-      axios.post('http://localhost:3001/classrooms.json', {
+      axios.post(process.env.REACT_APP_CLASSROOMS_INDEX, {
         classroom: {
           number: number,
           teacher_id: teacher

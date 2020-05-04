@@ -14,14 +14,14 @@ function Groups(props) {
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/groups.json')
+    axios.get(process.env.REACT_APP_GROUPS_INDEX)
     .then(res => {
       setGroups(res.data);
     });
   }, [modalShow]);
 
   const handleChange = () => {
-    axios.get('http://localhost:3001/groups.json')
+    axios.get(process.env.REACT_APP_GROUPS_INDEX)
     .then(res => {
       setGroups(res.data);
     });
@@ -66,7 +66,7 @@ function ShowButton(props) {
   const [students, setStudents] = useState([]);
 
   function showGroup() {
-    axios.get('http://localhost:3001/groups/'+props.id+'.json')
+    axios.get(process.env.REACT_APP_GROUPS_PREFIX+props.id+'.json')
     .then(res => {
       setStudents(res.data);
       console.log(res.data);
@@ -127,7 +127,7 @@ function ShowGroupModal(props) {
 
 function DestroyButton(props) {
   function deleteGroup() {
-    axios.delete('http://localhost:3001/groups/'+props.id+'.json')
+    axios.delete(process.env.REACT_APP_GROUPS_PREFIX+props.id+'.json')
     .then(res => {
       console.log(res.data);
       props.onChange();
@@ -165,14 +165,14 @@ function EditGroupModal(props) {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       setTeachers(res.data);
     })
   }, []);
 
   function editGroup() {
-    axios.patch('http://localhost:3001/groups/'+props.id+'.json', {
+    axios.patch(process.env.REACT_APP_GROUPS_PREFIX+props.id+'.json', {
       group: {
         name: name,
         teacher_id: teacher
@@ -244,7 +244,7 @@ function AddNewGroupModal(props) {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       setTeachers(res.data);
     })
@@ -255,7 +255,7 @@ function AddNewGroupModal(props) {
     if (name === '') {
       setError('name field should be filled');
     } else {
-      axios.post('http://localhost:3001/groups.json', {
+      axios.post(process.env.REACT_APP_GROUPS_INDEX, {
         group: {
           name: name,
           teacher_id: teacher

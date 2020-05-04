@@ -13,14 +13,14 @@ function Teachers(props) {
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       setTeachers(res.data);
     });
   }, [modalShow]);
 
   const handleChange = () => {
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       setTeachers(res.data);
     });
@@ -64,7 +64,7 @@ function Teachers(props) {
 
 function DestroyButton(props) {
   function deleteTeacher() {
-    axios.delete('http://localhost:3001/teachers/'+props.id+'.json')
+    axios.delete(process.env.REACT_APP_TEACHERS_PREFIX+props.id+'.json')
     .then(res => {
       console.log(res.data);
       props.onChange();
@@ -103,7 +103,7 @@ function EditTeacherModal(props) {
   const [subject, setSubject] = useState(props.subject);
 
   function editTeacher() {
-    axios.patch('http://localhost:3001/teachers/'+props.id+'.json', {
+    axios.patch(process.env.REACT_APP_TEACHERS_PREFIX+props.id+'.json', {
       teacher: {
         name: name,
         surname: surname,
@@ -181,7 +181,7 @@ function AddNewTeacherModal(props) {
     if (name === '' || surname === '') {
       setError('name and surname fields should be filled');
     } else {
-      axios.post('http://localhost:3001/teachers.json', {
+      axios.post(process.env.REACT_APP_TEACHERS_INDEX, {
         teacher: {
           name: name,
           surname: surname,

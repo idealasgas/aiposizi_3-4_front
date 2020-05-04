@@ -16,7 +16,7 @@ function App() {
 
   function showStudents(e){
     e.preventDefault();
-    axios.get('http://localhost:3001/students.json')
+    axios.get(process.env.REACT_APP_STUDENTS_INDEX)
     .then(res => {
       let students = JSON.stringify(res.data);
       console.log(res.data);
@@ -27,7 +27,7 @@ function App() {
 
   function showTeachers(e) {
     e.preventDefault();
-    axios.get('http://localhost:3001/teachers.json')
+    axios.get(process.env.REACT_APP_TEACHERS_INDEX)
     .then(res => {
       let teachers = JSON.stringify(res.data);
       console.log(res.data);
@@ -38,7 +38,7 @@ function App() {
 
   function showClassrooms(e) {
     e.preventDefault();
-    axios.get('http://localhost:3001/classrooms.json')
+    axios.get(process.env.REACT_APP_CLASSROOMS_INDEX)
     .then(res => {
       let classrooms = JSON.stringify(res.data);
       console.log(res.data);
@@ -49,7 +49,7 @@ function App() {
 
   function showGroups(e) {
     e.preventDefault();
-    axios.get('http://localhost:3001/groups.json')
+    axios.get(process.env.REACT_APP_GROUPS_INDEX)
     .then(res => {
       let groups = JSON.stringify(res.data);
       console.log(res.data);
